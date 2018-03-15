@@ -24,5 +24,6 @@ const gameScore = {
     
     startTheGame: function() {
         console.log('Done!!');
+        game.state.start('gameStart');
     }
 }

@@ -1,5 +1,6 @@
 /*global Phaser */
 
+let numberOfItems = 3;
 
 function init() {
     // body...
