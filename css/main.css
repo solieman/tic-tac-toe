@@ -1,0 +1,12 @@
+html, body {
+    margin: 0 auto;
+    padding: 0;
+    background-color: #aabbcc;
+    display: flex;
+    justify-content: center;
+}
+
+.game-div {
+    width: 600px;
+    height: 600px;
+}

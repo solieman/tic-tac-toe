@@ -1,0 +1,24 @@
+{
+  "name": "t-t-t",
+  "version": "1.0.0",
+  "description": "tic-tac-toe simple game",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solieman/tic-tac-toe.git"
+  },
+  "author": "Soliman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/solieman/tic-tac-toe/issues"
+  },
+  "homepage": "https://github.com/solieman/tic-tac-toe#readme",
+  "devDependencies": {
+    "grunt": "^1.0.2",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-uglify-es": "^3.3.0"
+  }
+}
