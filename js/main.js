@@ -1,6 +1,7 @@
 /*global Phaser */
 
 let numberOfItems = 12;
+let GameResult = "Draw";
 
 function init() {
     // body...
