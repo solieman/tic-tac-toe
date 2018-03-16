@@ -7,11 +7,6 @@ const gamePlay = {
     },
     
     create: function(){
-        const startBtn = game.add.button(game.world.centerX, game.world.centerY, 'start', this.startTheGame);
-        startBtn.anchor.set(0.5, 0.5);
-        const text = game.add.text(0, 0, "Good for you!!!", {font: "18px Arial", fill: "#ffffff"});
-        text.anchor.set(0.5, 0.5);
-        startBtn.addChild(text);
         
         let Board = {};
         
@@ -75,7 +70,8 @@ const gamePlay = {
                 
                 if (result) {
                     //Show result
-                    console.log('Winner is: ', result);
+                    showResult(result);
+                    
                 } else {
                     changePlayer();
                 }
@@ -87,8 +83,6 @@ const gamePlay = {
         
         
         function checkWinner(){
-            
-            console.log(Board);
             
             //check rows
             for (let row = 0; row < numberOfItems; row++) {
@@ -153,6 +147,8 @@ const gamePlay = {
                 
             } else {
                 console.log('No more moves...');
+                GameResult = "Draw!";
+                showResult("Draw!");
                 return(0);
             }
         }
@@ -173,6 +169,44 @@ const gamePlay = {
                 }
             }
         }
+        
+        
+        function showResult(result) {
+            console.log('Winner is: ', result);
+            if(result !== "Draw!"){
+                GameResult = 'Winner is: '+ result;
+            } else { GameResult = result; }
+            let graphics = game.add.graphics(0, 0);
+            graphics.beginFill(0x686868,0.75);
+            graphics.drawRect(0, 0, game.world._width, game.world._height);
+            
+            let textElement = new Phaser.Text(game, game.world.centerX, game.world.centerY, 'Winner is: '+result, {font: "40px Arial", fill: "#00ffff"});
+            textElement.anchor.x = 0.5;
+            textElement.anchor.y = 0.5;
+            graphics.addChild(textElement);
+            graphics.endFill();
+            
+            for (let key in Board) {
+                if (Board.hasOwnProperty(key)) {
+                    if(typeof(Board[key]) != 'number') {
+                        console.log('-------> ',Board[key]);
+                        Board[key].events.onInputUp.removeAll();
+                    }
+                }
+            }
+            
+            const startBtn = game.add.button(game.world.centerX, 1.5 * game.world.centerY, 'start', scoreOfTheGame);
+            startBtn.anchor.set(0.5, 0.5);
+            const text = game.add.text(0, 0, "Try again!!!", {font: "18px Arial", fill: "#ffffff"});
+            text.anchor.set(0.5, 0.5);
+            startBtn.addChild(text);
+        }
+        
+        
+        function scoreOfTheGame() {
+            console.log('Done!!');
+            game.state.start('gameScore');
+        }
     },
     
     update: function(){
@@ -184,8 +218,5 @@ const gamePlay = {
         //console.log('render');
     },
     
-    startTheGame: function() {
-        console.log('Done!!');
-        game.state.start('gameScore');
-    }
+    
 }
