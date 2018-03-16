@@ -18,8 +18,7 @@ const gamePlay = {
         // let items = game.add.group();
 
         const itemWidth = game.world._width / numberOfItems;
-        console.log(itemWidth);
-        
+
         // draw a rectangle
         
         for(let x=0; x< numberOfItems; x++){ 
@@ -38,11 +37,10 @@ const gamePlay = {
             }
         }
         
-        console.log(Board);
-        
         function onClick(target, pointer){
             if(target.exists){
-                if (Math.random( )> 1) {
+                console.log(currentPlayer);
+                if (currentPlayer === "Human") {
                     // draw a O
                     let graphics = game.add.graphics(0, 0);
                     graphics.lineStyle(0);
@@ -54,7 +52,7 @@ const gamePlay = {
                     graphics.endFill();
                     Board[target.id] = 1;
                     
-                } else {
+                } else if (currentPlayer === "AI") {
                     // draw a X
                     let graphics = game.add.graphics(0, 0);
                     graphics.beginFill(0xFF00FF);
@@ -74,7 +72,14 @@ const gamePlay = {
                 
                 //Check
                 const result = checkWinner();
-                console.log(result);
+                
+                if (result) {
+                    //Show result
+                    console.log('Winner is: ', result);
+                } else {
+                    changePlayer();
+                }
+                
             } else {
                 console.log(target.id, ' already dead');
             }
@@ -93,10 +98,10 @@ const gamePlay = {
                 }
                 if(sum === numberOfItems){
                     console.log('We have winner from row here!');
-                    return(sum);
+                    return(currentPlayer);
                 } else if(sum === -1*numberOfItems) {
                     console.log('We have other winner from row here!');
-                    return(sum);
+                    return(currentPlayer);
                 }
             }
             
@@ -108,10 +113,10 @@ const gamePlay = {
                 }
                 if(sum === numberOfItems){
                     console.log('We have winner from columns here!');
-                    return(sum);
+                    return(currentPlayer);
                 } else if(sum === -1*numberOfItems) {
                     console.log('We have other winner from columns here!');
-                    return(sum);
+                    return(currentPlayer);
                 }
             }
     
@@ -125,10 +130,10 @@ const gamePlay = {
                 
                 if(firstDiagonalSum === numberOfItems || secondDiagonalSum == numberOfItems){
                     console.log('We have winner from diagonals here!');
-                    return(secondDiagonalSum);
+                    return(currentPlayer);
                 } else if(firstDiagonalSum === -1*numberOfItems  || secondDiagonalSum == -1*numberOfItems) {
                     console.log('We have other winner from diagonals here!');
-                    return(secondDiagonalSum);
+                    return(currentPlayer);
                 }
             }
             
@@ -148,16 +153,25 @@ const gamePlay = {
                 
             } else {
                 console.log('No more moves...');
-                
+                return(0);
             }
+        }
+        
+        
+        function changePlayer() {
+            currentPlayer = currentPlayer === "Human" ? "AI" : "Human";
             
-            //if(available.length == 0) {
-                //the game is draw
-              
-            //}
-            //else {
-            //    return false;
-            //}
+            if(currentPlayer === "AI") {
+                //AI play!!
+                for (let key in Board) {
+                    if (Board.hasOwnProperty(key)) {
+                        if(typeof(Board[key]) != 'number') {
+                            onClick(Board[key], null);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     },
     
