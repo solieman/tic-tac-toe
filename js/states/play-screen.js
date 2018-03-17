@@ -64,7 +64,12 @@ const gamePlay = {
                     //Show result
                     showResult(result);
                 } else {
-                    setTimeout(function(){console.log('Set Time Out...');changePlayer();},100);
+                    if (emptyCells(Board).length) {
+                        setTimeout(function(){console.log('Set Time Out...');changePlayer();},100);    
+                    } else {
+                        showResult("Draw!");
+                    }
+                    
                     //changePlayer();
                 }
                 
@@ -83,12 +88,13 @@ const gamePlay = {
 
                 if (availableEmptyCells && availableEmptyCells.length > 0) {
                     //TO-DO: Select from MiniMax
-                    const selectedItemIndex = bestSelection();
+                    const bestSelectedItem = bestSelection();
+                    console.log(bestSelectedItem);
                     
 
-                    let selectedItem = availableEmptyCells[selectedItemIndex];
+                    // let selectedItem = availableEmptyCells[selectedItemIndex];
 
-                    onClick(selectedItem, null);    
+                    onClick(bestSelectedItem.index, null);    
                 } else {
                     
                 }
@@ -174,7 +180,6 @@ function bestSelection() {
 
 
 function checkWinner(newBoard,currentPlayer){
-    console.log(currentPlayer,'<--------------');
 
     //check rows
     for (let row = 0; row < numberOfItems; row++) {
@@ -223,34 +228,17 @@ function checkWinner(newBoard,currentPlayer){
         }
     }
     
-    //check available cells
-    // let availableCells = numberOfItems*numberOfItems;
-    // for (let key in newBoard) {
-    //     if (newBoard.hasOwnProperty(key)) {
-    //         if(typeof(newBoard[key]) != 'number') {
-    //             break;
-    //         } else {
-    //             availableCells--;
-    //         }
-    //     }
+    return(false);
+    
+    // let availableCells = emptyCells(newBoard).length;
+    
+    // if (availableCells) {
+    //     console.log('More Movies available');
+    // } else {
+    //     console.log('No more moves...');
     // }
     
-    console.log('check: ', newBoard);
-    
-    let availableCells = emptyCells(newBoard).length;
-    
-    if (availableCells) {
-        console.log('More Movies available');
-        // return false;
-        
-    } else {
-        console.log('No more moves...');
-        // GameResult = "Draw!";
-        showResult("Draw!");
-        // return(false);
-    }
-    
-    return(false);
+    // return(false);
 }
         
 
@@ -272,7 +260,6 @@ function showResult(result) {
     for (let key in Board) {
         if (Board.hasOwnProperty(key)) {
             if(typeof(Board[key]) != 'number') {
-                console.log('-------> ',Board[key]);
                 Board[key].events.onInputUp.removeAll();
             }
         }
@@ -289,8 +276,6 @@ function showResult(result) {
 
 function minimax(newBoard, player) {
 	var availSpots = emptyCells(newBoard);
-	console.log(availSpots);
-	console.log(availSpots.length);
 
 	if (checkWinner(newBoard, 'Human')) {
 		return {score: -10};
@@ -305,26 +290,22 @@ function minimax(newBoard, player) {
 	    
 		//To-DO: Creat new board with one additonal selection
 		
-		
 		var move = {};
-		
-// 		move.index = newBoard[availSpots[i]];
+
 		move.index = availSpots[i];
-// 		newBoard[availSpots[i]] = player;
+
         if (player === 'Human') {
-		    newBoard[availSpots[i].id]=  1;
+		    newBoard[availSpots[i].id] =  1;
 		} else {
-		    newBoard[availSpots[i].id]=  -1;
+		    newBoard[availSpots[i].id] =  -1;
 		}
 
 		if (player == 'AI') {
-		    console.log('AI');
-// 			var result = minimax(newBoard, 'AI');
-// 			move.score = result;
+			var result = minimax(newBoard, 'AI');
+			move.score = result.score;
 		} else {
-		    console.log('Human');
-// 			var result = minimax(newBoard, 'Human');
-// 			move.score = result.score;
+			var result = minimax(newBoard, 'Human');
+			move.score = result.score;
 		}
 
 		newBoard[availSpots[i].id] = move.index;
@@ -332,8 +313,6 @@ function minimax(newBoard, player) {
 		moves.push(move);
 	}
 	
-	console.log(moves,newBoard);
-
 	var bestMove;
 	if(player === 'AI') {
 		var bestScore = -10000;
@@ -353,8 +332,8 @@ function minimax(newBoard, player) {
 		}
 	}
 	
-	console.log('bestMove: ',bestMove);
+	console.log('MiniMax - bestMove: ',bestMove);
 
-// 	return moves[bestMove];
-    return 1;
+	return moves[bestMove];
+    // return 1;
 }
