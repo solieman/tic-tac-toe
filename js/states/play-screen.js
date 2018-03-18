@@ -63,7 +63,7 @@ const gamePlay = {
 
                 if (result) {
                     //Show result
-                    showResult(result);
+                    showResult(currentPlayer);
                 } else {
                     if (emptyCells(Board).length) {
                         changePlayer();
@@ -92,8 +92,8 @@ const gamePlay = {
                     //TO-DO: Select from MiniMax
                     
                     const bestSelectionItem = bestSelection(Board);
-                    console.log(bestSelectionItem);
-                    let selectedItem = availableEmptyCells[bestSelectionItem.index];
+                    console.log('bestSelectionItem: ',bestSelectionItem);
+                    let selectedItem = bestSelectionItem.index;
                     console.log(selectedItem);
 
                     onClick(graphicsBoard[selectedItem], null);    
@@ -159,9 +159,10 @@ function drawX(target, itemWidth) {
 
 function bestSelection(newBoard) {
     //Random
+    const randomNumber = Math.floor(emptyCells(newBoard).length * Math.random());
     return {
-        index: Math.floor(emptyCells(newBoard).length * Math.random())
-    }
+        index: emptyCells(newBoard)[randomNumber]
+    };
     
     //MiniMax
 //     const res = minimax(newBoard,'AI');
