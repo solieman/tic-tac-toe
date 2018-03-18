@@ -1,4 +1,5 @@
-let Board = {};
+
+let graphicsBoard = {};
 
 const gamePlay = {
     
@@ -9,8 +10,7 @@ const gamePlay = {
     },
     
     create: function(){
-        
-        
+        let Board = {};
         currentPlayer = 'Human';
         
         // let items = game.add.group();
@@ -31,13 +31,15 @@ const gamePlay = {
                 graphics.input.useHandCursor = true;
                 graphics.events.onInputUp.add(onClick, this);
                 graphics.endFill();
-                Board[graphics.id] = graphics;
+                graphicsBoard[graphics.id] = graphics;
+                Board[graphics.id] = 0;
             }
         }
         
-        console.log('First Board: ', Board);
-        
+        console.log(Board);
+
         function onClick(target, pointer){
+            
             if(target.exists){
 
                 if (currentPlayer === "Human") {
@@ -50,22 +52,22 @@ const gamePlay = {
                     drawO(target,itemWidth);
                     Board[target.id] = -1;
                 }
-                    
+                
                 //Remove the target after adding the new element
                 
                 target.exists = false;
                 
                 //Check
-                // const result = checkWinner();
-                const result = checkWinner(Board,currentPlayer);
-                console.log('Result: ', result);
-                
+                const result = checkWinner(Board);
+                console.log(result);
+
                 if (result) {
                     //Show result
                     showResult(result);
                 } else {
                     if (emptyCells(Board).length) {
-                        setTimeout(function(){console.log('Set Time Out...');changePlayer();},100);    
+                        changePlayer();
+                        // setTimeout(function(){console.log('Set Time Out...');changePlayer();},100);
                     } else {
                         showResult("Draw!");
                     }
@@ -88,26 +90,16 @@ const gamePlay = {
 
                 if (availableEmptyCells && availableEmptyCells.length > 0) {
                     //TO-DO: Select from MiniMax
-                    const bestSelectedItem = bestSelection();
-                    console.log(bestSelectedItem);
                     
+                    const bestSelectionItem = bestSelection(Board);
+                    console.log(bestSelectionItem);
+                    let selectedItem = availableEmptyCells[bestSelectionItem.index];
+                    console.log(selectedItem);
 
-                    // let selectedItem = availableEmptyCells[selectedItemIndex];
-
-                    onClick(bestSelectedItem.index, null);    
+                    onClick(graphicsBoard[selectedItem], null);    
                 } else {
                     
                 }
-                
-                
-                // for (let key in Board) {
-                //     if (Board.hasOwnProperty(key)) {
-                //         if(typeof(Board[key]) != 'number') {
-                //             onClick(Board[key], null);
-                //             break;
-                //         }
-                //     }
-                // }
             }
         }
     },
@@ -120,28 +112,25 @@ const gamePlay = {
     render: function(){
         //console.log('render');
     },
-    
-    
 }
 
-
 function emptyCells(currentBoard) {
+    console.log(currentBoard);
 	let stillEmptyCells = [];
 	for (let key in currentBoard) {
         if (currentBoard.hasOwnProperty(key)) {
-            if(typeof(currentBoard[key]) !== 'number') {
-                stillEmptyCells.push(currentBoard[key]);
+            if(currentBoard[key] === 0){//'number') {
+                stillEmptyCells.push(key);
             }
         }
     }
+    console.log(stillEmptyCells);
     return stillEmptyCells;
 }
 
 function scoreOfTheGame() {
-
     game.state.start('gameScore');
 }
-
 
 function drawO(target, itemWidth) {
     // draw a O
@@ -154,7 +143,6 @@ function drawO(target, itemWidth) {
     graphics.drawCircle(target.x + itemWidth/2, target.y + itemWidth/2, itemWidth/2);
     graphics.endFill();
 }
-
 
 function drawX(target, itemWidth) {
     // draw a X
@@ -169,84 +157,68 @@ function drawX(target, itemWidth) {
     graphics.endFill();
 }
 
-
-function bestSelection() {
-    //return Math.floor(availableCells.length * Math.random());
-    const res = minimax(Board,'AI');
-    console.log('bestSelection',res);
-	return res;
-}
-
-
-
-function checkWinner(newBoard,currentPlayer){
-
-    //check rows
-    for (let row = 0; row < numberOfItems; row++) {
-        let sum = 0
-        for (let column = 0; column < numberOfItems; column++) {
-            sum += newBoard[column+''+row];
-        }
-        if(sum === numberOfItems){
-            console.log('We have winner from row here!');
-            return(true);
-        } else if(sum === -1*numberOfItems) {
-            console.log('We have other winner from row here!');
-            return(true);
-        }
+function bestSelection(newBoard) {
+    //Random
+    return {
+        index: Math.floor(emptyCells(newBoard).length * Math.random())
     }
     
-    //check columns
-    for (let column = 0; column < numberOfItems; column++) {
-        let sum = 0
+    //MiniMax
+//     const res = minimax(newBoard,'AI');
+//     console.log('bestSelection - res: ',res);
+// 	return res;
+
+}
+
+function checkWinner(newBoard){
+    console.log('checkWinner');
+        //check rows
         for (let row = 0; row < numberOfItems; row++) {
-            sum += newBoard[column+''+row];
+            let sum = 0
+            for (let column = 0; column < numberOfItems; column++) {
+                sum += newBoard[column+''+row];
+            }
+            
+            if(Math.abs(sum) === numberOfItems){
+                return(true);
+            }
         }
-        if(sum === numberOfItems){
-            console.log('We have winner from columns here!');
-            return(true);
-        } else if(sum === -1*numberOfItems) {
-            console.log('We have other winner from columns here!');
-            return(true);
-        }
-    }
-
-    //check diagonals
-    let firstDiagonalSum = 0;
-    let secondDiagonalSum = 0;
-    
-    for (let order = 0; order < numberOfItems; order++) {
-        firstDiagonalSum += newBoard[order+''+order];
-        secondDiagonalSum += newBoard[order+''+(numberOfItems -1 -order)];
         
-        if(firstDiagonalSum === numberOfItems || secondDiagonalSum == numberOfItems){
-            console.log('We have winner from diagonals here!');
-            return(true);
-        } else if(firstDiagonalSum === -1*numberOfItems  || secondDiagonalSum == -1*numberOfItems) {
-            console.log('We have other winner from diagonals here!');
-            return(true);
+        //check columns
+        for (let column = 0; column < numberOfItems; column++) {
+            let sum = 0
+            for (let row = 0; row < numberOfItems; row++) {
+                sum += newBoard[column+''+row];
+            }
+            
+            if(Math.abs(sum) === numberOfItems){
+                return(true);
+            }
         }
-    }
     
+        //check diagonals
+        let firstDiagonalSum = 0;
+        let secondDiagonalSum = 0;
+        
+        for (let order = 0; order < numberOfItems; order++) {
+            firstDiagonalSum += newBoard[order+''+order];
+            secondDiagonalSum += newBoard[order+''+(numberOfItems -1 -order)];
+            
+            if(Math.abs(firstDiagonalSum) === numberOfItems || Math.abs(secondDiagonalSum) === numberOfItems){
+                return(true);
+            }
+        }
     return(false);
-    
-    // let availableCells = emptyCells(newBoard).length;
-    
-    // if (availableCells) {
-    //     console.log('More Movies available');
-    // } else {
-    //     console.log('No more moves...');
-    // }
-    
-    // return(false);
 }
         
-
-
 function showResult(result) {
+    console.log('showResult');
     if(result !== "Draw!"){
         GameResult = 'Winner is: '+ result;
-    } else { GameResult = result; }
+    } else { 
+        GameResult = result;
+    }
+    
     let graphics = game.add.graphics(0, 0);
     graphics.beginFill(0x686868,0.75);
     graphics.drawRect(0, 0, game.world._width, game.world._height);
@@ -257,10 +229,10 @@ function showResult(result) {
     graphics.addChild(textElement);
     graphics.endFill();
     
-    for (let key in Board) {
-        if (Board.hasOwnProperty(key)) {
-            if(typeof(Board[key]) != 'number') {
-                Board[key].events.onInputUp.removeAll();
+    for (let key in graphicsBoard) {
+        if (graphicsBoard.hasOwnProperty(key)) {
+            if(typeof(graphicsBoard) != 'number') {
+                graphicsBoard[key].events.onInputUp.removeAll();
             }
         }
     }
@@ -272,59 +244,60 @@ function showResult(result) {
     startBtn.addChild(text);
 }
 
-
-
 function minimax(newBoard, player) {
-	var availSpots = emptyCells(newBoard);
+	let availSpots = emptyCells(newBoard);
 
-	if (checkWinner(newBoard, 'Human')) {
-		return {score: -10};
-	} else if (checkWinner(newBoard, 'AI')) {
-		return {score: 10};
+    if (checkWinner(newBoard)) {
+        if (player === 'Human') {
+            console.log('Human won!');
+            return {score: -10};
+        } else if (player === 'AI'){
+            console.log('AI won..');
+            return {score: 10};
+        }
 	} else if (availSpots.length === 0) {
 		return {score: 0};
 	}
+
 	
-	var moves = [];
-	for (var i = 0; i < availSpots.length; i++) {
+	let moves = [];
+	for (let i = 0; i < availSpots.length; i++) {
 	    
-		//To-DO: Creat new board with one additonal selection
-		
-		var move = {};
-
+		let move = {};
 		move.index = availSpots[i];
-
+		
+		//To-DO: Creat new board with one additonal selection
         if (player === 'Human') {
-		    newBoard[availSpots[i].id] =  1;
+		    newBoard[availSpots[i]] =  1;
 		} else {
-		    newBoard[availSpots[i].id] =  -1;
+		    newBoard[availSpots[i]] =  -1;
 		}
 
-		if (player == 'AI') {
-			var result = minimax(newBoard, 'AI');
+		if (player === 'Human') {
+			let result = minimax(newBoard, 'AI');
 			move.score = result.score;
 		} else {
-			var result = minimax(newBoard, 'Human');
+			let result = minimax(newBoard, 'Human');
 			move.score = result.score;
 		}
 
-		newBoard[availSpots[i].id] = move.index;
+		newBoard[availSpots[i]] = move.index;
 
 		moves.push(move);
 	}
 	
-	var bestMove;
+	let bestMove;
 	if(player === 'AI') {
-		var bestScore = -10000;
-		for(var i = 0; i < moves.length; i++) {
+		let bestScore = -10000;
+		for(let i = 0; i < moves.length; i++) {
 			if (moves[i].score > bestScore) {
 				bestScore = moves[i].score;
 				bestMove = i;
 			}
 		}
 	} else {
-		var bestScore = 10000;
-		for(var i = 0; i < moves.length; i++) {
+		let bestScore = 10000;
+		for(let i = 0; i < moves.length; i++) {
 			if (moves[i].score < bestScore) {
 				bestScore = moves[i].score;
 				bestMove = i;
@@ -332,8 +305,6 @@ function minimax(newBoard, player) {
 		}
 	}
 	
-	console.log('MiniMax - bestMove: ',bestMove);
-
 	return moves[bestMove];
     // return 1;
 }
