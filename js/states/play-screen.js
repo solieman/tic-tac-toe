@@ -36,8 +36,6 @@ const gamePlay = {
             }
         }
         
-        console.log(Board);
-
         function onClick(target, pointer){
             
             if(target.exists){
@@ -45,12 +43,12 @@ const gamePlay = {
                 if (currentPlayer === "Human") {
                     //Draw X
                     drawX(target,itemWidth);
-                    Board[target.id] = 1;
+                    Board[target.id] = -1;
                     
                 } else if (currentPlayer === "AI") {
                     //Draw O
                     drawO(target,itemWidth);
-                    Board[target.id] = -1;
+                    Board[target.id] = 1;
                 }
                 
                 //Remove the target after adding the new element
@@ -59,7 +57,6 @@ const gamePlay = {
                 
                 //Check
                 const result = checkWinner(Board);
-                console.log(result);
 
                 if (result) {
                     //Show result
@@ -92,9 +89,7 @@ const gamePlay = {
                     //TO-DO: Select from MiniMax
                     
                     const bestSelectionItem = bestSelection(Board);
-                    console.log('bestSelectionItem: ',bestSelectionItem);
                     let selectedItem = bestSelectionItem.index;
-                    console.log(selectedItem);
 
                     onClick(graphicsBoard[selectedItem], null);    
                 } else {
@@ -115,7 +110,6 @@ const gamePlay = {
 }
 
 function emptyCells(currentBoard) {
-    console.log(currentBoard);
 	let stillEmptyCells = [];
 	for (let key in currentBoard) {
         if (currentBoard.hasOwnProperty(key)) {
@@ -124,7 +118,6 @@ function emptyCells(currentBoard) {
             }
         }
     }
-    console.log(stillEmptyCells);
     return stillEmptyCells;
 }
 
@@ -159,20 +152,18 @@ function drawX(target, itemWidth) {
 
 function bestSelection(newBoard) {
     //Random
-    const randomNumber = Math.floor(emptyCells(newBoard).length * Math.random());
-    return {
-        index: emptyCells(newBoard)[randomNumber]
-    };
+    // const randomNumber = Math.floor(emptyCells(newBoard).length * Math.random());
+    // return {
+    //     index: emptyCells(newBoard)[randomNumber]
+    // };
     
     //MiniMax
-//     const res = minimax(newBoard,'AI');
-//     console.log('bestSelection - res: ',res);
-// 	return res;
-
+    const res = minimax(clone(newBoard),'AI');
+    console.log('bestSelection - res: ',res);
+	return res;
 }
 
 function checkWinner(newBoard){
-    console.log('checkWinner');
         //check rows
         for (let row = 0; row < numberOfItems; row++) {
             let sum = 0
@@ -213,7 +204,6 @@ function checkWinner(newBoard){
 }
         
 function showResult(result) {
-    console.log('showResult');
     if(result !== "Draw!"){
         GameResult = 'Winner is: '+ result;
     } else { 
@@ -246,14 +236,13 @@ function showResult(result) {
 }
 
 function minimax(newBoard, player) {
-	let availSpots = emptyCells(newBoard);
+	let availSpots = emptyCells(clone(newBoard));
+// 	console.log('minimax - availSpots: ', availSpots)
 
     if (checkWinner(newBoard)) {
         if (player === 'Human') {
-            console.log('Human won!');
             return {score: -10};
         } else if (player === 'AI'){
-            console.log('AI won..');
             return {score: 10};
         }
 	} else if (availSpots.length === 0) {
@@ -263,32 +252,30 @@ function minimax(newBoard, player) {
 	
 	let moves = [];
 	for (let i = 0; i < availSpots.length; i++) {
-	    
+    // for (let i = 0; i < 2; i++) {
 		let move = {};
 		move.index = availSpots[i];
 		
-		//To-DO: Creat new board with one additonal selection
-        if (player === 'Human') {
-		    newBoard[availSpots[i]] =  1;
-		} else {
-		    newBoard[availSpots[i]] =  -1;
-		}
-
+		
+        // Creat new board with one additonal selection and find its MiniMax
 		if (player === 'Human') {
-			let result = minimax(newBoard, 'AI');
+		    newBoard[availSpots[i]] =  -1;
+			let result = minimax(clone(newBoard), 'AI');
 			move.score = result.score;
 		} else {
-			let result = minimax(newBoard, 'Human');
+		    newBoard[availSpots[i]] =  1;
+		    
+			let result = minimax(clone(newBoard), 'Human');
 			move.score = result.score;
 		}
 
-		newBoard[availSpots[i]] = move.index;
+// 		newBoard[availSpots[i]] = move.index;
 
 		moves.push(move);
 	}
-	
+
 	let bestMove;
-	if(player === 'AI') {
+	if(player === 'Human') {
 		let bestScore = -10000;
 		for(let i = 0; i < moves.length; i++) {
 			if (moves[i].score > bestScore) {
@@ -308,4 +295,18 @@ function minimax(newBoard, player) {
 	
 	return moves[bestMove];
     // return 1;
+}
+
+
+
+//Helpers functions
+function clone(obj){
+    if(obj == null || typeof(obj) != 'object')
+        return obj;
+
+    var temp = new obj.constructor(); 
+    for(var key in obj)
+        temp[key] = clone(obj[key]);
+
+    return temp;
 }
