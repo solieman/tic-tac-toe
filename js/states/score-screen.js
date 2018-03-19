@@ -24,6 +24,7 @@ const gameScore = {
     
     startTheGame: function() {
         console.log('Done!!');
+        document.getElementById("board-width").style.display = 'block';
         game.state.start('gameStart');
     }
 }

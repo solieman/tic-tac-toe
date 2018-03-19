@@ -24,6 +24,7 @@ const gameStart = {
     
     startTheGame: function() {
         console.log('will do!!');
+        document.getElementById("board-width").style.display = 'none';
         game.state.start('gamePlay');
     }
 }

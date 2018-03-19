@@ -36,9 +36,15 @@ const gamePlay = {
             }
         }
         
+        
+        let stepsDiv = document.getElementById('steps-div');
+        stepsDiv.innerHTML = '';
+
         function onClick(target, pointer){
             
             if(target.exists){
+                
+                stepsDiv.innerHTML += (target.id + ',');
 
                 if (currentPlayer === "Human") {
                     //Draw X
@@ -150,9 +156,10 @@ function drawX(target, itemWidth) {
     graphics.endFill();
 }
 
+
 function bestSelection(newBoard) {
     //Random
-    if (numberOfItems > 3) {
+    if (numberOfItems > 4) {
         const randomNumber = Math.floor(emptyCells(newBoard).length * Math.random());
         return {
             index: emptyCells(newBoard)[randomNumber]

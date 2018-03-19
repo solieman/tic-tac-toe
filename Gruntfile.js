@@ -4,7 +4,7 @@ module.exports = function(grunt) {
         concat: {
             // concat task configuration goes here.
             js: {
-                src: ['js/*.js'],
+                src: ['js/states/*.js','js/*.js','js/libs/*.js'],
                 dest: 'build/scripts.js'
             },
             css : {
@@ -24,9 +24,6 @@ module.exports = function(grunt) {
             }
         },
         
-        // Arbitrary non-task-specific properties.
-        my_property: 'whatever',
-        my_src_files: ['foo/*.js', 'bar/*.js'],
     });
     
     grunt.loadNpmTasks('grunt-contrib-concat');

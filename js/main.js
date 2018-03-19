@@ -1,8 +1,15 @@
 /*global Phaser */
 
-let numberOfItems = 6;
+let numberOfItems = 3;
 let GameResult = "Draw";
 let currentPlayer = 'Human';
+
+function resizeBoard() {
+    // body...
+    numberOfItems = Number(document.getElementById("board-width").value);
+    console.log(numberOfItems);
+}
+
 
 function init() {
     // body...

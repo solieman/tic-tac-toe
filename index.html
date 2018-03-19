@@ -16,12 +16,25 @@
         <script type="text/javascript" src="js/states/score-screen.js"></script>
         <script type="text/javascript" src="js/libs/minimax.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
+        <!--<script type="text/javascript" src="build/scripts.js"></script>-->
     </head>
     
     <body onload='init()'>
-        
-        <div id="game-main-div" class="game-div">
-            
+        <div>
+            <div id="board-size-div" class="row">
+                <select id="board-width" onchange="resizeBoard()">
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+            <div id="game-main-div" class="game-div">
+                
+            </div>
+            <div id="steps-div" class="row">
+                
+            </div>
         </div>
         
     </body>
