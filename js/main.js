@@ -1,6 +1,6 @@
 /*global Phaser */
 
-let numberOfItems = 3;
+let numberOfItems = 6;
 let GameResult = "Draw";
 let currentPlayer = 'Human';
 

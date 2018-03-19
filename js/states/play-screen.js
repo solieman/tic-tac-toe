@@ -152,15 +152,17 @@ function drawX(target, itemWidth) {
 
 function bestSelection(newBoard) {
     //Random
-    // const randomNumber = Math.floor(emptyCells(newBoard).length * Math.random());
-    // return {
-    //     index: emptyCells(newBoard)[randomNumber]
-    // };
-    
-    //MiniMax
-    const res = minimax(clone(newBoard),'AI');
-    console.log('bestSelection - res: ',res);
-	return res;
+    if (numberOfItems > 3) {
+        const randomNumber = Math.floor(emptyCells(newBoard).length * Math.random());
+        return {
+            index: emptyCells(newBoard)[randomNumber]
+        };
+    } else {
+        //MiniMax
+        const res = minimax(clone(newBoard),'AI');
+        console.log('bestSelection - res: ',res);
+    	return res;
+    }
 }
 
 function checkWinner(newBoard){
