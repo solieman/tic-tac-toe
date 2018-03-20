@@ -21,18 +21,21 @@
     
     <body onload='init()'>
         <div>
-            <div id="board-size-div" class="row">
+            <div id="board-size-div" class="col col-md-12 form-group text-center ">
                 <select id="board-width" onchange="resizeBoard()">
-                    <option value="3" selected>3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
+                    <option value="3" selected>3 (MiniMax)</option>
+                    <option value="4">4 (MiniMax)</option>
+                    <option value="5">5 (Random)</option>
+                    <option value="6">6 (Random)</option>
+                    <option value="7">7 (Random)</option>
+                    <option value="8">8 (Random)</option>
+                    <option value="9">9 (Random)</option>
                 </select>
             </div>
             <div id="game-main-div" class="game-div">
                 
             </div>
-            <div id="steps-div" class="row">
+            <div id="steps-div" class="row steps-div">
                 
             </div>
         </div>

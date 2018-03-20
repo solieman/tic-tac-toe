@@ -39,12 +39,13 @@ const gamePlay = {
         
         let stepsDiv = document.getElementById('steps-div');
         stepsDiv.innerHTML = '';
+        stepsDiv.innerHTML += (numberOfItems + ', ');
 
         function onClick(target, pointer){
             
             if(target.exists){
                 
-                stepsDiv.innerHTML += (target.id + ',');
+                stepsDiv.innerHTML += (target.id + ', ');
 
                 if (currentPlayer === "Human") {
                     //Draw X
@@ -62,7 +63,7 @@ const gamePlay = {
                 target.exists = false;
                 
                 //Check
-                const result = checkWinner(Board);
+                const result = checkWinner(Board,0).status;
 
                 if (result) {
                     //Show result
@@ -101,7 +102,23 @@ const gamePlay = {
                 } else {
                     
                 }
-            }
+            } 
+            //To-DO: AI VS AI
+            // else {
+            //     //AI2 play!!
+            //     const availableEmptyCells = emptyCells(Board);
+
+            //     if (availableEmptyCells && availableEmptyCells.length > 0) {
+            //         //TO-DO: Select from MiniMax
+                    
+            //         const bestSelectionItem = bestSelection(Board);
+            //         let selectedItem = bestSelectionItem.index;
+
+            //         onClick(graphicsBoard[selectedItem], null);    
+            //     } else {
+                    
+            //     }
+            // } 
         }
     },
     
@@ -166,13 +183,13 @@ function bestSelection(newBoard) {
         };
     } else {
         //MiniMax
-        const res = minimax(clone(newBoard),'AI');
+        const res = minimax(clone(newBoard),'AI',0);
         console.log('bestSelection - res: ',res);
     	return res;
     }
 }
 
-function checkWinner(newBoard){
+function checkWinner(newBoard, depth){
         //check rows
         for (let row = 0; row < numberOfItems; row++) {
             let sum = 0
@@ -181,7 +198,10 @@ function checkWinner(newBoard){
             }
             
             if(Math.abs(sum) === numberOfItems){
-                return(true);
+                return({ 
+                    status:true,
+                    depth: depth
+                    });
             }
         }
         
@@ -193,7 +213,10 @@ function checkWinner(newBoard){
             }
             
             if(Math.abs(sum) === numberOfItems){
-                return(true);
+                return({ 
+                    status:true,
+                    depth: depth
+                    });
             }
         }
     
@@ -206,18 +229,36 @@ function checkWinner(newBoard){
             secondDiagonalSum += newBoard[order+''+(numberOfItems -1 -order)];
             
             if(Math.abs(firstDiagonalSum) === numberOfItems || Math.abs(secondDiagonalSum) === numberOfItems){
-                return(true);
+                return({ 
+                    status:true,
+                    depth: depth
+                    });
             }
         }
-    return(false);
+    return({
+        status:false,
+        depth: depth
+    });
 }
         
 function showResult(result) {
+    let stepsDiv = document.getElementById('steps-div');
+    
     if(result !== "Draw!"){
         GameResult = 'Winner is: '+ result;
+        if (result === "Human") {
+            stepsDiv.innerHTML += -1;
+        } else {
+            stepsDiv.innerHTML += 1;
+        }
     } else { 
         GameResult = result;
+        stepsDiv.innerHTML += 0;
     }
+    
+    const gameStory = stepsDiv.innerHTML.split(",").map(Number);
+    //TO-DO: ML
+    
     
     let graphics = game.add.graphics(0, 0);
     graphics.beginFill(0x686868,0.75);

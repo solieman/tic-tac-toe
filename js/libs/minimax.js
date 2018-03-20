@@ -1,17 +1,20 @@
 
-function minimax(newBoard, player) {
+function minimax(newBoard, player, depth) {
 	let availSpots = emptyCells(clone(newBoard));
-// 	console.log('minimax - availSpots: ', availSpots)
+	depth += 1;
 
-    if (checkWinner(newBoard)) {
-        if (player === 'Human') {
-            return {score: -10};
-        } else if (player === 'AI'){
-            return {score: 10};
+    if (checkWinner(newBoard).status) {
+        if (player === 'AI'){
+            return {score: 10 - depth };
+        } else if (player === 'Human') {
+            return {score: depth -10 };
+        } else  {
+        	return { score: 0 };
         }
 	} else if (availSpots.length === 0) {
-		return {score: 0};
+		return {score: 0 };
 	}
+
 
 	
 	let moves = [];
@@ -24,12 +27,12 @@ function minimax(newBoard, player) {
         // Creat new board with one additonal selection and find its MiniMax
 		if (player === 'Human') {
 		    newBoard[availSpots[i]] =  -1;
-			let result = minimax(clone(newBoard), 'AI');
+			let result = minimax(clone(newBoard), 'AI', depth);
 			move.score = result.score;
 		} else {
 		    newBoard[availSpots[i]] =  1;
 		    
-			let result = minimax(clone(newBoard), 'Human');
+			let result = minimax(clone(newBoard), 'Human', depth);
 			move.score = result.score;
 		}
 
@@ -39,7 +42,7 @@ function minimax(newBoard, player) {
 	}
 
 	let bestMove;
-	if(player === 'Human') {
+	if(player === 'AI') {
 		let bestScore = -10000;
 		for(let i = 0; i < moves.length; i++) {
 			if (moves[i].score > bestScore) {

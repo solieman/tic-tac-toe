@@ -10,3 +10,7 @@ html, body {
     width: 600px;
     height: 600px;
 }
+
+.steps-div {
+    word-wrap: break-word;
+}
