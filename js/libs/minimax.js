@@ -42,7 +42,7 @@ function minimax(newBoard, player, depth) {
 	}
 
 	let bestMove;
-	if(player === 'AI') {
+	if(player === 'Human') {
 		let bestScore = -10000;
 		for(let i = 0; i < moves.length; i++) {
 			if (moves[i].score > bestScore) {
